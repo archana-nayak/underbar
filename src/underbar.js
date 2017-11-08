@@ -183,25 +183,15 @@
        }
     
     if(Array.isArray(collection)){
-      // var index = 0;
-      //  if(!accumulatorInitialized){
-      //    accumulator = collection[0];
-      //    index = 1;
-      //  }else{
-      //   accumulator = thridArgumentToReduce;
-      //  }
         for(; index < length; index++){
-            accumulator = iterator(collection[index],index,list);
+            accumulator = iterator(accumulator, collection[index]);
         }
       }else{ //if it is an object
-        var keys = Object.keys(collection);
-        if(!accumulatorInitialized){
-          accumulator
+        for( ; index < length; index++){
+          accumulator = iterator(accumulator,collection[keys[index]]);
         }
-        for(var index = 0 length = keys.length; index < length; index++){
-
-        }
-    }
+      }
+      return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
