@@ -47,16 +47,15 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    var keys = !Array.isArray(collection) && (Object.keys(collection));
+    var length = (keys || collection).length;
     if(Array.isArray(collection)){
-      for(var i = 0, length = collection.length; i < length; i++){
+      for(var i = 0 ; i < length; i++){
         iterator(collection[i], i, collection);
       }
     }else{
-          var keys = Object.keys(collection);
-          for(var i = 0, length = keys.length; i < length; i++){
-            
-              iterator(collection[keys[i]],keys[i],collection);
-            
+          for(var i = 0; i < length; i++){
+            iterator(collection[keys[i]],keys[i],collection);
           }
     }
   };
@@ -102,15 +101,34 @@
     });
     return rejected;
   };
-
-  // Produce a duplicate-free version of the array.
+   /* My comments for uniq are in * comments
+   // Trying to understand uniq, this might help
+   // The iterator is called with the values(array,true,iterator)
+   // The values in the result depend on what the iterator passes back
+   // For the purposes of deciding which
+   // result to keep and which to filter out, the array is `[true, false, false, false, false, false]`
+   //Then the result can be [true, false] the only two different values. Others are all sifted out.
+   //ie.If it helps visualize the solution better*/
+   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
     var result = [];
-    _.each(array,function(item,index,list,isSorted){
-             if(!result.includes(item)){
-              result.push(item);
-             }
-    });
+    if(!isSorted){
+      _.each(array,function(item){
+               if(!result.includes(item)){
+                result.push(item);
+               }
+      });
+     }else{
+      var iteratorResult = [];
+      _.each(array,function(item, index){
+        var returnValue = iterator(item);
+        console.log(!iteratorResult.includes(returnValue));
+        if(!iteratorResult.includes(returnValue)){
+          iteratorResult[index] = returnValue;
+          result.push(item);
+        }
+      });
+  }
     return result;
   };
 
@@ -199,7 +217,7 @@
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
     return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
+      if (wasFound) {//map uses
         return true;
       }
       return item === target;
@@ -210,6 +228,7 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
