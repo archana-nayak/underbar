@@ -228,13 +228,22 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
-    
+    return _.reduce(collection, function(isEvery,item){
+      
+        return iterator ? isEvery && Boolean(iterator(item)) : isEvery && Boolean(item);
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    return (_.reduce(collection,function(somePassTest,item){
+        if(somePassTest){
+          return true;
+        }
+        return iterator ? Boolean(iterator(item)) : Boolean(item);
+    },false) );
   };
 
 
@@ -257,11 +266,36 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var argumentArray = Array.from(arguments);
+    //iterate over the arguments array to get the list of objects
+    
+    var objectToExtend = argumentArray[0];
+    var argumentArrayNew = argumentArray.slice(1);
+    _.each(argumentArrayNew,function(objToAdd){
+      _.each(objToAdd, function(value, key){
+         objectToExtend[key] = value;
+      });
+    });
+    return objectToExtend;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+     var argumentArray = Array.from(arguments);
+     if(argumentArray.length < 2){
+      return obj;
+     }
+     var objectToExtend = argumentArray[0];
+     var argumentsToExtend = argumentArray.slice(1);
+     _.each(argumentsToExtend,function(objectToAdd){
+       _.each(objectToAdd,function(value,key){
+        if(!(key in objectToExtend)){
+          objectToExtend[key] = value;
+        }
+       });
+     });
+     return objectToExtend;
   };
 
 
