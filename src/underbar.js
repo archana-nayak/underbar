@@ -356,6 +356,12 @@ _.memoize = function(func) {
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+
+   var argument = arguments.length > 2 ? [].slice.call(arguments,2) : arguments;
+    
+    setTimeout(function(){
+      func.apply(this, argument);
+    },wait);
   };
 
 
@@ -370,6 +376,16 @@ _.memoize = function(func) {
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newArray = array.slice(0);
+    var temp,
+        index;
+    for(var i = 0,len = newArray.length; i < len; i++){
+      index = Math.floor(Math.random() * len);
+      temp = newArray[index];
+      newArray[index] = newArray[i];
+      newArray[i] = temp;
+    }
+    return newArray;
   };
 
 
