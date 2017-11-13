@@ -268,20 +268,15 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-     var argumentArray = Array.from(arguments);
-     if(argumentArray.length < 2){
-      return obj;
-     }
-     var objectToExtend = argumentArray[0];
-     var argumentsToExtend = argumentArray.slice(1);
-     _.each(argumentsToExtend,function(objectToAdd){
-       _.each(objectToAdd,function(value,key){
-        if(!(key in objectToExtend)){
-          objectToExtend[key] = value;
+    var args = Array.prototype.slice.call(arguments,1);
+    _.each(args,function(appendObj){
+      for(var key in appendObj){
+        if(!(key in obj)){
+          obj[key] = appendObj[key];
         }
-       });
-     });
-     return objectToExtend;
+      }
+    });
+    return obj;
   };
 
 
