@@ -117,7 +117,6 @@
       var iteratorResult = [];
       _.each(array,function(item, index){
         var returnValue = iterator(item);
-        console.log(!iteratorResult.includes(returnValue));
         if(!iteratorResult.includes(returnValue)){
           iteratorResult[index] = returnValue;
           result.push(item);
@@ -130,16 +129,15 @@
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
-    // map() is a useful primitive iteration function that works a lot
-    // like each(), but in addition to running the operation on all
-    // the members, it also maintains an array of results.
-    var result = Array(collection.length);//maps to a same length array
-    for(var index = 0; index < collection.length; index++){
-      result[index] = iterator(collection[index],index,collection);
-    }  
-     return result;
-    
-  };
+  //   // map() is a useful primitive iteration function that works a lot
+  //   // like each(), but in addition to running the operation on all
+  //   // the members, it also maintains an array of results.
+  var result = [];
+  _.each(collection,function(item){
+     result.push(iterator(item));
+  })
+  return result;
+};
 
   /*
    * TIP: map is really handy when you want to transform an array of
@@ -186,7 +184,6 @@
     var keys = !isArray && Object.keys(collection);
     var len = (keys || collection).length;
     if(accumulator !== undefined){//value has been assigned for accumulator
-       accumulator = arguments[2];
        index = 0;
     }else{
       accumulator = keys[0] || collection[0];
