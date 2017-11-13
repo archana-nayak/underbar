@@ -80,8 +80,8 @@
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
     var result = [];
-    _.each(collection,function(item,index,list){
-      if(test(item,index,list)){
+    _.each(collection,function(item){
+      if(test(item)){
          result.push(item);
       }
     });
@@ -92,14 +92,9 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    var result = _.filter(collection,test);
-    var rejected = [];
-    _.each(collection,function(item){
-       if(!result.includes(item)){
-          rejected.push(item);
-       }
+    return _.filter(collection, function(item){
+        return !test(item);
     });
-    return rejected;
   };
    /* My comments for uniq are in * comments
    // Trying to understand uniq, this might help
@@ -185,31 +180,23 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    var accumulatorInitialized = false;
-    var thridArgumentToReduce = arguments[2];
-    if(thridArgumentToReduce !== undefined){
-      accumulatorInitialized = true;
+  
+    var index;
+    var isArray = Array.isArray(collection);
+    var keys = !isArray && Object.keys(collection);
+    var len = (keys || collection).length;
+    if(accumulator !== undefined){//value has been assigned for accumulator
+       accumulator = arguments[2];
+       index = 0;
+    }else{
+      accumulator = keys[0] || collection[0];
+      index = 1;
     }
-       var index = 0;
-       var keys = !Array.isArray(collection) && Object.keys(collection);
-       var length = (keys || collection).length;
-       if(!accumulatorInitialized){
-         accumulator = Array.isArray(collection) ? collection[0] : collection[keys[0]];
-         index = 1;
-       }else{
-        accumulator = thridArgumentToReduce;
-       }
     
-    if(Array.isArray(collection)){
-        for(; index < length; index++){
-            accumulator = iterator(accumulator, collection[index]);
-        }
-      }else{ //if it is an object
-        for( ; index < length; index++){
-          accumulator = iterator(accumulator,collection[keys[index]]);
-        }
-      }
-      return accumulator;
+    for(; index < len; ++index){
+      accumulator = isArray  ? iterator(accumulator,collection[index]) : iterator(accumulator, collection[keys[index]]);
+    }
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -356,12 +343,15 @@ _.memoize = function(func) {
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-
-   var argument = arguments.length > 2 ? [].slice.call(arguments,2) : arguments;
-    
+    var args = Array.prototype.slice.call(arguments,2);
     setTimeout(function(){
-      func.apply(this, argument);
-    },wait);
+        func.apply(this,args);
+       },wait,);
+
+   // var argument = arguments.length > 2 ? [].slice.call(arguments,2) : arguments;
+   //  setTimeout(function(){
+   //    func.apply(this, argument);
+   //  },wait);
   };
 
 
