@@ -413,7 +413,24 @@ _.memoize = function(func) {
   //
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
-  _.zip = function() {
+   _.zip = function() {
+    var args = Array.prototype.slice.call(arguments);
+    var result = [];
+    _.each(args,function(array,indexArgs){
+      _.each(array,function(element, index){
+        if(result[index]){
+          result[index][indexArgs] = element;
+        }else{
+          result[index] = [element];
+        }
+      });
+      for(var i = 0; i < result.length; i++){
+       if(result[i][indexArgs]=== undefined){
+         result[i][indexArgs] = undefined;
+       }   
+      }
+    });
+    return result;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -421,6 +438,21 @@ _.memoize = function(func) {
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    result = result || [];
+    var nested = function(element){
+      if(!Array.isArray(element)){
+         result.push(element);
+         return;
+      }
+      _.each(element,function(elem){
+         nested(elem);
+      });
+    };
+    
+    _.each(nestedArray,function(element){
+      nested(element);
+    });
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
