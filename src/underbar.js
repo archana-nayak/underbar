@@ -54,9 +54,9 @@
         iterator(collection[i], i, collection);
       }
     }else{
-          for(var i = 0; i < length; i++){
-            iterator(collection[keys[i]],keys[i],collection);
-          }
+      for(var i = 0; i < length; i++){
+        iterator(collection[keys[i]],keys[i],collection);
+      }
     }
   };
 
@@ -384,6 +384,10 @@ _.memoize = function(func) {
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+     
+     return _.map(collection,function(element){
+        return (typeof functionOrKey === "function") ? functionOrKey.apply(element,args) : element[functionOrKey].apply(element,args);
+     });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -391,6 +395,17 @@ _.memoize = function(func) {
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+     if(typeof iterator === "string"){
+      return collection.sort(function(element1,element2){
+        return element1[iterator] - element2[iterator];
+     });
+    }
+    if(typeof iterator === "function"){
+      return collection.sort(function(element1,element2){
+        return iterator(element1) - iterator(element2);
+      });
+    }
+    
   };
 
   // Zip together two or more arrays with elements of the same index
